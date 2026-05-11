@@ -6,3 +6,5 @@ dotenv@16.4.7
 cookie-parser@1.4.7
 express-validator@6.14.3
 cors@2.8.5 
+cloudinary@2.5.1
+npm i @arcjet/node@1.0.0-beta.10  @arcjet/inspect@1.0.0-beta.10

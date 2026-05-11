@@ -1,18 +1,22 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import { signup, updateProfile } from '../controllers/auth.controller.js';
+import { login } from '../controllers/auth.controller.js';
+import { logout } from '../controllers/auth.controller.js';
+import { protectRoute } from '../middleware/auth.middleware.js';
+import arcjetProtection from '../middleware/arcjet.middleware.js';
+
 dotenv.config();
 const router = express.Router();
 
-router.get('/signup', (req, res) => {
-    res.send('signup endpoint');
-});
+router.use(arcjetProtection);
 
-router.get('/login', (req, res) => {
-    res.send('login endpoint');
-});
+router.post('/signup', signup);
+router.post('/login', login);
+router.post('/logout', logout);
 
-router.get('/logout', (req, res) => {
-    res.send('logout endpoint');
-});
+router.put('/update-profile', protectRoute, updateProfile);
+
+
 
 export default router;

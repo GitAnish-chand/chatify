@@ -1,22 +1,25 @@
 import express from 'express';
-import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config();
 import authRoutes from './routes/auth.route.js';    
 import messagesRoutes from './routes/messages.route.js';
+import {connectDB} from './lib/db.js';
+import { ENV } from './lib/env.js';
+import cookieParser from 'cookie-parser';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = ENV.PORT || 3000;
 
 app.use(express.json());
+app.use(cookieParser());
+
 app.use('/api/auth', authRoutes);
 app.use('/api/messages', messagesRoutes);
 
 // deployment
 const __dirname = path.resolve();
 
-if (process.env.NODE_ENV === 'production') {
+if (ENV.NODE_ENV === 'production') {
     const frontendPath = path.join(__dirname, '../frontend', 'dist');
 
     app.use(express.static(frontendPath));
@@ -26,6 +29,16 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-app.listen(PORT, () => {
-    console.log('Server is running on port: ' + PORT);
-});
+const startServer = async () => {
+    try {
+        app.listen(PORT, () => {
+            console.log('Server is running on port:', PORT);
+        });
+        await connectDB();
+    } catch (error) {
+        console.error('Failed to start server:', error);
+        process.exit(1);
+    }
+};
+
+startServer();
